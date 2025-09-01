@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Health & Lifespan Predictor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide-static"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-blue-200 min-h-screen flex items-center justify-center p-4">
+
+  <div class="bg-white shadow-xl rounded-2xl p-8 max-w-lg w-full">
+    <h1 class="text-2xl font-bold text-center text-blue-700 mb-6">
+      🩺 Health & Lifespan Predictor
+    </h1>
+
+    <form id="healthForm" class="space-y-4">
+      <!-- Current Age -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">🎂 Current Age</label>
+        <input type="number" id="age" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Enter your age" required>
+      </div>
+
+      <!-- Sleep -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">😴 Sleep (hours per night)</label>
+        <input type="number" id="sleep" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="e.g. 7" required>
+      </div>
+
+      <!-- Water -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">💧 Water Intake (liters per day)</label>
+        <input type="number" id="water" step="0.1" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="e.g. 2.5" required>
+      </div>
+
+      <!-- Steps -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">🚶 Daily Steps</label>
+        <input type="number" id="steps" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="e.g. 8000" required>
+      </div>
+
+      <!-- Screen Time -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">📱 Screen Time (hours/day)</label>
+        <input type="number" id="screen" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="e.g. 4" required>
+      </div>
+
+      <!-- Exercise -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">🏋️ Exercise (days per week)</label>
+        <input type="number" id="exercise" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="e.g. 3" required>
+      </div>
+
+      <!-- Smoking/Drinking -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">🚬 Do you smoke or drink?</label>
+        <select id="habits" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+          <option value="no">No</option>
+          <option value="yes">Yes</option>
+        </select>
+      </div>
+
+      <!-- Button -->
+      <button type="button" onclick="calculateHealth()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200">
+        Calculate Lifespan
+      </button>
+    </form>
+
+    <!-- Results -->
+    <div id="result" class="mt-6 hidden bg-blue-50 border border-blue-200 rounded-xl p-4">
+      <h2 class="text-lg font-bold text-blue-700 mb-2">Your Result</h2>
+      <p id="lifespan" class="text-gray-800 font-medium"></p>
+      <p id="tips" class="mt-2 text-sm text-gray-600 italic"></p>
+    </div>
+  </div>
+
+  <script>
+    function calculateHealth() {
+      const age = parseInt(document.getElementById("age").value);
+      const sleep = parseInt(document.getElementById("sleep").value);
+      const water = parseFloat(document.getElementById("water").value);
+      const steps = parseInt(document.getElementById("steps").value);
+      const screen = parseInt(document.getElementById("screen").value);
+      const exercise = parseInt(document.getElementById("exercise").value);
+      const habits = document.getElementById("habits").value;
+
+      let lifespan = 70; // base
+
+      // Sleep
+      if (sleep >= 7 && sleep <= 9) lifespan += 5;
+      else lifespan -= 3;
+
+      // Water
+      if (water >= 2) lifespan += 3;
+      else lifespan -= 2;
+
+      // Steps
+      if (steps >= 7000) lifespan += 4;
+      else lifespan -= 2;
+
+      // Screen time
+      if (screen > 6) lifespan -= 4;
+      else if (screen <= 3) lifespan += 2;
+
+      // Exercise
+      if (exercise >= 3) lifespan += 4;
+      else lifespan -= 2;
+
+      // Habits
+      if (habits === "yes") lifespan -= 7;
+
+      // Ensure lifespan not less than current age
+      if (lifespan < age) lifespan = age + 1;
+
+      // Show result
+      document.getElementById("lifespan").textContent =
+        `Predicted Lifespan: ${lifespan} years (Current Age: ${age})`;
+
+      // Health Tips
+      let tip = "";
+      if (sleep < 7) tip += "Try to sleep at least 7 hours. ";
+      if (water < 2) tip += "Increase your water intake. ";
+      if (steps < 7000) tip += "Walk more, aim for 7k+ steps. ";
+      if (exercise < 3) tip += "Exercise at least 3 times a week. ";
+      if (screen > 6) tip += "Reduce screen time for better health. ";
+      if (habits === "yes") tip += "Avoid smoking/drinking for long life.";
+
+      document.getElementById("tips").textContent = tip || "You're doing great! Keep it up.";
+      document.getElementById("result").classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
